@@ -356,16 +356,16 @@
             const buildLocalPoem = (name, theme) => {
                 const templates = {
                     Romantik: {
-                        title: `${name} İçin Yumuşak Bir Romantizm`,
-                        poem: `Gözlerinde saklı bir gün batımı var,\nSeni düşündüğüm her an bir şarkı uyanır.\n\nYavaşça yaklaşan bir huzur gibi,\nSen, hayatımın en güzel sessizliği oluyorsun.`
+                        title: `${name} - Kalbimin Şarkısı`,
+                        poem: `Senin ismini her şeyde buluyorum,\nDubaya batmış güneşte, sonbahar yapraklarında.\n\nYavaş adımlarla gelişin hayalinde,\nAller düşlerimi boyuyor, sözleri müzik oluyor.`
                     },
                     Eğlenceli: {
-                        title: `${name} İçin Gülümseten Bir Şiir`,
-                        poem: `Seninle zaman geçmek bir neşe yarışıdır,\nBazen kahkaha, bazen küçük bir kıkırdama.\n\nDünyanın en tatlı sürprizi gibi,\nBir bakışın bile günümü aydınlatır.`
+                        title: `${name} ile Dünyanın En Güzel Oyunu`,
+                        poem: `Seninle kahkahalar yağmur gibi yağıyor,\nGözlerine baktığımda dünya durup kalıyor.\n\nTatlı bir delilik bu, senin adının telaffuzu,\nHer gülüşün benim en güzel kazancı.`
                     },
                     Derin: {
-                        title: `${name} İçin Derin Bir Duruş`,
-                        poem: `Bir rüzgâr gibi geçiyorsun içime,\nAma bıraktığın iz, hiç silinmeyen bir iz.\n\nSessizliğin bile bir anlam taşır,\nVe sen, o anlamın en güzel hali oluyorsun.`
+                        title: `${name} - Ruhun Dili`,
+                        poem: `Senin yokluğunda denizdeki su kadar sessizim,\nBulut gibi geçişin, sabıkası acıyı taşıyan bir rüya.\n\nBiliyorum, bir soru soruluyor sessizde,\nSen, sorunun cevabı değil, sorunun kendisisin.`
                     }
                 };
 
@@ -403,23 +403,34 @@
                 startLoadingMessages();
 
                 // LLM Prompt'u hazırlama
-                const systemPrompt = `Sen romantik, etkileyici ve modern bir şairsin. Amacın bir kızı etkilemek için ona özel şiirler yazmak. Şiirler yapay zeka tarafından yazılmış gibi değil, samimi bir insanın içinden gelmiş gibi durmalı. Klişelerden olabildiğince uzak dur.`;
+                const systemPrompt = `Sen çok yetenekli, modern ve orijinal bir şairsin. Yazacağın şiirler benzersiz, etkileyici ve duygu dolu olmalı. 
+Kişiye özel, samimi ve doğal gelmeli - hiç klişe veya yapay AI şiiri gibi durmasın. 
+Kelimeleri sanatça seç, mecazlar ve imajlar kullan. Şiir, kalbi dokunmalı ve kalıcı olmalı.
+Başlık kısa ve çekici, şiir 2-3 kita olabilir, canlı ve güzel olsun.`;
                 
                 let themeInstruction = "";
                 if (selectedTheme === "Romantik") {
-                    themeInstruction = "Aşk, sevgi, güzellik ve zarafet üzerine odaklan. Kalbe dokunan, naif kelimeler seç.";
+                    themeInstruction = "Aşk, özlem, güzellik temaları. Şiirde hisler derinleşsin, doğru kelimeler seç. Kalbe dokunan, romantik ama abartısız.";
                 } else if (selectedTheme === "Eğlenceli") {
-                    themeInstruction = "Gülümseten, biraz esprili, tatlı ve neşeli bir üslup kullan. Sıkıcı olmasın.";
+                    themeInstruction = "Neşeli, gülümseten, tatlı. Hafif espri, pozitif enerji. Sıkıcı olmasın, keyifli, canlı dil kullan.";
                 } else if (selectedTheme === "Derin") {
-                    themeInstruction = "Daha yoğun hisler barındıran, mecazların kullanıldığı, ruhani ve biraz gizemli bir hava kat.";
+                    themeInstruction = "Derin duygular, felsefi sorular. Güçlü mecazlar, sessiz güzellik. Gizemli, düşündürücü, ruhani bir hava kat.";
                 }
 
-                const userQuery = `Lütfen "${name}" ismindeki bir kız için ${selectedTheme.toLowerCase()} temada kısa bir şiir yaz. (En fazla 3-4 kıta olsun). ${themeInstruction}
-                Lütfen sadece Şiirin Başlığını ve Şiirin Kendisini şu JSON formatında dön:
-                {
-                    "title": "Şiirin Başlığı",
-                    "poem": "Şiirin 1. satırı\\nŞiirin 2. satırı\\n\\nŞiirin 3. satırı..."
-                }`;
+                const userQuery = `${name} isimli biri için ${selectedTheme.toLowerCase()} temada orijinal, etkileyici ve kişiye özel bir şiir yaz.
+
+Talimatlar:
+- Şiir benzersiz ve unutulmaz olmalı
+- Klişe veya şablondan kaçın
+- Doğal ve samimi bir dil kullan
+- 2-3 kita, güçlü imajlarla dolu
+- ${themeInstruction}
+
+Sadece şu JSON formatında cevap ver:
+{
+    "title": "Şiirin Başlığı",
+    "poem": "Satır 1\\nSatır 2\\n\\nSatır 3\\nSatır 4"
+}`;
 
                 const payload = {
                     contents: [{ parts: [{ text: userQuery }] }],
@@ -429,8 +440,8 @@
                     }
                 };
 
-                const apiKey = ""; // API Key Canvas ortamında otomatik eklenecektir.
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const apiKey = ""; // Kendi Gemini API anahtarınızı buraya ekleyin
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 if (!apiKey) {
                     renderPoemResult(buildLocalPoem(name, selectedTheme));
