@@ -53,24 +53,33 @@
 
     <style>
         body {
-            /* Yumuşak kağıt dokusu hissi veren çok hafif gradient */
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            /* Yumuşak ve Romantik Pembe Gradient Arka Plan */
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%); 
             overflow-x: hidden;
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+            /* Arkadaki pembenin içeri süzülmesini sağlayan cam efekti */
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 35px -5px rgba(244, 63, 94, 0.15); /* Pembe tonlu hafif gölge */
         }
 
         .heart-float {
             position: absolute;
-            opacity: 0.1;
+            opacity: 0.25; /* Kalpler artık biraz daha belirgin */
             pointer-events: none;
             color: #f43f5e;
             animation: float 6s ease-in-out infinite;
+        }
+
+        /* YENİ: Arkada parlayan romantik pembe ışık hüzmeleri */
+        .bg-blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -96,7 +105,8 @@
 
         .heart-text {
             fill: #000000; /* Simsiyah Yazı */
-            font-size: 20px;
+            font-size: 160px; /* YAZI 10 KAT BÜYÜTÜLDÜ */
+            font-family: 'Playfair Display', serif; /* Yazı daha zarif bir fonta geçirildi */
             font-weight: bold;
             text-anchor: middle;
             opacity: 0;
@@ -143,10 +153,14 @@
 <body class="relative min-h-screen text-slate-800 flex flex-col justify-between selection:bg-rose-200 selection:text-rose-900">
 
     <!-- Ses Dosyaları -->
-    <audio id="bgMusic" loop src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=romantic-piano-114404.mp3"></audio>
+    <audio id="bgMusic" loop src="./nazlicanim.mp3"></audio>
     <audio id="typewriterSound" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_51d2f83db5.mp3?filename=typewriter-1-105120.mp3"></audio>
 
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- YENİ: Arka plana eklenen devasa romantik pembe ışıklar -->
+        <div class="bg-blob bg-rose-300 w-96 h-96 rounded-full top-[-10%] left-[-10%] mix-blend-multiply animate-pulse-slow"></div>
+        <div class="bg-blob bg-pink-300 w-96 h-96 rounded-full bottom-[-10%] right-[-10%] mix-blend-multiply animate-pulse-slow" style="animation-delay: 2s;"></div>
+        
         <i class="fa-solid fa-heart heart-float" style="top: 10%; left: 5%; font-size: 1.5rem; animation-delay: 0s;"></i>
         <i class="fa-solid fa-heart heart-float" style="top: 30%; right: 10%; font-size: 2rem; animation-delay: 2s;"></i>
         <i class="fa-solid fa-heart heart-float" style="bottom: 20%; left: 15%; font-size: 1rem; animation-delay: 1s;"></i>
@@ -283,20 +297,20 @@
     </div>
 
     <!-- Siyah-Pembe Atmosferli Animasyon Ekranı (Linear Gradient: Soldan Pembe, Sağdan Siyah) -->
-    <div id="secretHeartModal" class="fixed inset-0 z-[70] hidden items-center justify-center opacity-0 transition-opacity duration-1000" style="background: linear-gradient(to right, #db2777 15%, #000000 85%);">
+    <div id="secretHeartModal" class="fixed inset-0 z-[70] hidden items-center justify-center opacity-0 transition-opacity duration-1000" style="background: linear-gradient(to right, #db2777 0%, #000000 100%);">
         <button id="closeSecretBtn" class="absolute top-6 right-6 text-white/50 hover:text-white text-3xl transition z-50">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <div class="relative w-full max-w-sm p-4 flex items-center justify-center">
+        <div class="relative w-full p-4 flex items-center justify-center">
             
-            <!-- SVG Alanı -->
-            <svg viewBox="0 0 100 100" class="w-64 h-64 md:w-80 md:h-80 overflow-visible">
+            <!-- YÜKSEK ÇÖZÜNÜRLÜKLÜ VE BÜYÜTÜLMÜŞ SVG ALANI -->
+            <svg viewBox="0 0 1000 1000" class="w-80 h-80 md:w-[450px] md:h-[450px] overflow-visible">
                 <!-- Kalp ve Yazıyı Birlikte Hareket Ettirecek Grup (<g>) -->
-                <g id="heartGroup" style="transform-origin: 50px 50px;">
-                    <!-- Kusursuz kalp vektörü -->
-                    <path class="heart-path" d="M 50 85 C 50 85 15 55 15 25 C 15 10 35 10 50 25 C 65 10 85 10 85 25 C 85 55 50 85 50 85 Z" />
-                    <!-- İçindeki Yazı -->
-                    <text x="50" y="52" class="heart-text font-handwriting">Melike</text>
+                <g id="heartGroup" style="transform-origin: 500px 500px;">
+                    <!-- 10 Kat Büyütülmüş Kusursuz Vektör (Pikselleşmeyi Sıfırlar) -->
+                    <path class="heart-path" d="M 500 850 C 500 850 150 550 150 250 C 150 100 350 100 500 250 C 650 100 850 100 850 250 C 850 550 500 850 500 850 Z" />
+                    <!-- İçindeki Yazı ve Konumu Ayarlandı -->
+                    <text x="500" y="470" class="heart-text">Melike</text>
                 </g>
             </svg>
 
