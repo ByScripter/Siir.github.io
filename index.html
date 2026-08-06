@@ -406,18 +406,27 @@
                 startLoadingMessages();
 
                 // LLM Prompt'u hazırlama
-                const systemPrompt = `Sen çok yetenekli, modern ve orijinal bir şairsin. Yazacağın şiirler benzersiz, etkileyici ve duygu dolu olmalı. 
-Kişiye özel, samimi ve doğal gelmeli - hiç klişe veya yapay AI şiiri gibi durmasın. 
-Kelimeleri sanatça seç, mecazlar ve imajlar kullan. Şiir, kalbi dokunmalı ve kalıcı olmalı.
-Başlık kısa ve çekici, şiir 2-3 kita olabilir, canlı ve güzel olsun.`;
+                const systemPrompt = `Sen usta bir şairsin. Her şiir tamamen özgün, yaratıcı ve kişiye özel olmalı.
+
+Kurallar:
+- Hiçbir iki şiir aynı olmasın
+- Klişelerden çok uzak dur
+- Doğal, samimi, insan yazılmış gibi
+- Güçlü metaforlar ve görüntüler kullan
+- Kelimeler çok iyi seçilmiş olsun
+- Kalbe dokunmalı, unutulmaz olmalı
+- Başlık kısa, çekici, özel
+- Şiir 2-3 kıta, dengeli ritim
+
+Her çağrıda FARKLI bir angle, stil ve tema kullan. Tekrar etme!`;
                 
                 let themeInstruction = "";
                 if (selectedTheme === "Romantik") {
-                    themeInstruction = "Aşk, özlem, güzellik temaları. Şiirde hisler derinleşsin, doğru kelimeler seç. Kalbe dokunan, romantik ama abartısız.";
+                    themeInstruction = "Aşk, arzı, sehneti. Farklı bir bakış açısından. Belki doğa metaforu, belki felsefe, belki sürreal. Sadece duygu ve güzellik. Romantik ama sürprizli.";
                 } else if (selectedTheme === "Eğlenceli") {
-                    themeInstruction = "Neşeli, gülümseten, tatlı. Hafif espri, pozitif enerji. Sıkıcı olmasın, keyifli, canlı dil kullan.";
+                    themeInstruction = "Neşe, espri, tatlılık. Hafif mizah, akıllı sözler. Eğlence ama derin bir anlam saklı. Gülümsemeyi hak eden şiir.";
                 } else if (selectedTheme === "Derin") {
-                    themeInstruction = "Derin duygular, felsefi sorular. Güçlü mecazlar, sessiz güzellik. Gizemli, düşündürücü, ruhani bir hava kat.";
+                    themeInstruction = "Derin düşünceler, yapısallaşmamış duygular. Muğlak, gizemli, düşündürücü. Felsefe, varoluş, ruh. Sessiz ama güçlü. Anlamlar katmanı.";
                 }
 
                 const userQuery = `${name} isimli biri için ${selectedTheme.toLowerCase()} temada orijinal, etkileyici ve kişiye özel bir şiir yaz.
@@ -439,6 +448,8 @@ Sadece şu JSON formatında cevap ver:
                     contents: [{ parts: [{ text: userQuery }] }],
                     systemInstruction: { parts: [{ text: systemPrompt }] },
                     generationConfig: {
+                        temperature: 1.0,
+                        top_p: 0.95,
                         responseMimeType: "application/json",
                     }
                 };
