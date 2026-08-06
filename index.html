@@ -1,624 +1,185 @@
 <!DOCTYPE html>
-<!-- AI Powered Poem Generator - Updated 2026-08-06 -->
-<html lang="tr">
+<html lang="tr" class="scroll-smooth">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sana Özel Şiir</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Sana Özel - Şiir Jeneratörü</title>
     
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            /* Romantik gradient arka plan */
-            background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+    <!-- Tailwind CSS (CDN üzerinden) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome (İkonlar) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- html2canvas kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-        h1, h2, .poem-text {
-            font-family: 'Playfair Display', serif;
+    <!-- Tailwind Yapılandırması -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        handwriting: ['Dancing Script', 'cursive'],
+                    },
+                    colors: {
+                        rose: { 50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337', },
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
         }
+    </script>
 
-        /* Arka plan animasyonları için parçacıklar */
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 182, 193, 0.5); /* Uçuk pembe */
-            animation: float 10s infinite ease-in-out;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.5; }
-            50% { transform: translateY(-100px) scale(1.2) rotate(180deg); opacity: 0.8; }
-            100% { transform: translateY(0) scale(1) rotate(360deg); opacity: 0.5; }
-        }
-
-        /* İçerik kapsayıcısı önde dursun */
-        .content-wrapper {
-            z-index: 10;
-            position: relative;
-        }
-
-        /* Daktilo efekti için */
-        .typewriter-text {
-            overflow: hidden;
-            border-right: .15em solid #d81b60;
-            white-space: pre-wrap;
-            margin: 0 auto;
-            letter-spacing: .05em;
-            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-        }
-
-        /* Sadece daktilo animasyonu tanımlamaları (JavaScript ile dinamik kullanılacak) */
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #d81b60; }
-        }
-        
-        .fade-in {
-            animation: fadeIn 1.5s ease-in forwards;
-            opacity: 0;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .loading-heart {
-            display: inline-block;
-            color: #d81b60;
-            animation: heartbeat 1.5s infinite;
-        }
-        
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.3); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.3); }
-            70% { transform: scale(1); }
-        }
-
-        /* Özel buton stilleri */
-        .btn-theme {
-            transition: all 0.3s ease;
-        }
-        .btn-theme.selected {
-            background-color: #d81b60;
-            color: white;
-            border-color: #d81b60;
-            box-shadow: 0 4px 6px -1px rgba(216, 27, 96, 0.3);
-        }
-    </style>
+    <!-- Harici CSS Dosyamız -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="text-gray-800 flex items-center justify-center p-4">
 
-    <!-- Dinamik arka plan parçacıkları buraya eklenecek -->
-    <div id="particles-container"></div>
+<body class="relative text-slate-800 transition-colors duration-500">
+    
+    <!-- Arka Plan Partikülleri -->
+    <div class="particles" id="particles"></div>
 
-    <main class="content-wrapper w-full max-w-2xl bg-white/80 backdrop-blur-md rounded-3xl shadow-xl overflow-hidden border border-white/40">
+    <!-- Müzik Kontrolü -->
+    <button id="musicBtn" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full glass-card flex items-center justify-center text-rose-500 hover:scale-110 transition-transform shadow-lg cursor-pointer">
+        <i class="fa-solid fa-music"></i>
+    </button>
+    <audio id="bgMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-piano-and-strings-594.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container mx-auto px-4 py-12 min-h-screen flex flex-col justify-center relative z-10 max-w-3xl">
         
-        <div class="p-8 sm:p-12">
-            <!-- Header Alanı -->
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 text-pink-500 mb-4 shadow-sm">
-                    <i class="fa-solid fa-feather-pointed text-2xl"></i>
-                </div>
-                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">Sana Özel Şiir</h1>
-                <p class="text-gray-500 text-sm sm:text-base">Kelimelerin gücüyle hislerini anlat.</p>
-            </div>
+        <!-- Başlık -->
+        <header class="text-center mb-10 animate-slide-up">
+            <h1 class="font-handwriting text-5xl md:text-6xl text-rose-600 mb-3 drop-shadow-sm">Sana Özel...</h1>
+            <p class="font-sans text-sm md:text-base text-slate-600 opacity-80">Ruhunu okşayacak, sadece ona ait mısralar.</p>
+        </header>
 
-            <!-- Girdi Formu Alanı -->
-            <div id="input-section" class="space-y-6 transition-all duration-500">
-                
-                <!-- İsim Girişi -->
-                <div class="space-y-2">
-                    <label for="nameInput" class="block text-sm font-medium text-gray-700 ml-1">Onun İsmi</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fa-regular fa-heart text-pink-400"></i>
-                        </div>
-                        <input type="text" id="nameInput" 
-                            class="block w-full pl-12 pr-4 py-4 sm:text-lg border-2 border-pink-100 rounded-2xl focus:ring-0 focus:border-pink-400 bg-white shadow-inner placeholder-gray-300 transition-colors" 
-                            placeholder="İsmini buraya yaz..." autocomplete="off">
-                    </div>
+        <!-- Giriş Formu -->
+        <div id="inputSection" class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl animate-fade-in border-t-4 border-rose-400">
+            <div class="space-y-6">
+                <!-- İsim -->
+                <div>
+                    <label class="block text-sm font-medium mb-2 pl-1"><i class="fa-solid fa-heart text-rose-500 mr-2"></i>Onun İsmi</label>
+                    <input type="text" id="nameInput" placeholder="Örn: Ayşe" class="w-full px-5 py-4 rounded-2xl bg-white/70 border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all shadow-inner font-sans text-lg">
+                </div>
+
+                <!-- Detay -->
+                <div>
+                    <label class="block text-sm font-medium mb-2 pl-1"><i class="fa-solid fa-star text-rose-500 mr-2"></i>Ona dair özel bir detay (Opsiyonel)</label>
+                    <input type="text" id="detailInput" placeholder="Örn: Gülüşü çok güzel, gözleri kahverengi..." class="w-full px-5 py-3 rounded-2xl bg-white/70 border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all shadow-inner font-sans text-sm">
                 </div>
 
                 <!-- Tema Seçimi -->
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 ml-1">Nasıl bir şiir olsun?</label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <button type="button" class="btn-theme selected py-3 px-2 border-2 border-pink-200 rounded-xl text-pink-600 bg-pink-50 hover:bg-pink-100 text-sm font-medium" data-theme="Romantik">
-                            Romantik <i class="fa-solid fa-rose ml-1 text-xs"></i>
-                        </button>
-                        <button type="button" class="btn-theme py-3 px-2 border-2 border-purple-200 rounded-xl text-purple-600 bg-purple-50 hover:bg-purple-100 text-sm font-medium" data-theme="Eğlenceli">
-                            Eğlenceli <i class="fa-regular fa-face-smile-wink ml-1 text-xs"></i>
-                        </button>
-                        <button type="button" class="btn-theme py-3 px-2 border-2 border-blue-200 rounded-xl text-blue-600 bg-blue-50 hover:bg-blue-100 text-sm font-medium" data-theme="Derin">
-                            Derin <i class="fa-solid fa-moon ml-1 text-xs"></i>
-                        </button>
+                <div>
+                    <label class="block text-sm font-medium mb-3 pl-1"><i class="fa-solid fa-palette text-rose-500 mr-2"></i>Şiirin Duygusu</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="themeButtons">
+                        <button class="theme-btn active bg-rose-500 text-white py-3 rounded-xl font-medium shadow-md transition-all hover:bg-rose-600 scale-105" data-theme="Romantik">Romantik</button>
+                        <button class="theme-btn bg-white/60 text-slate-700 py-3 rounded-xl font-medium shadow-sm transition-all hover:bg-rose-100" data-theme="Tutkulu">Tutkulu</button>
+                        <button class="theme-btn bg-white/60 text-slate-700 py-3 rounded-xl font-medium shadow-sm transition-all hover:bg-rose-100" data-theme="Masalsı">Masalsı</button>
+                        <button class="theme-btn bg-white/60 text-slate-700 py-3 rounded-xl font-medium shadow-sm transition-all hover:bg-rose-100" data-theme="Eğlenceli">Eğlenceli</button>
                     </div>
                 </div>
 
                 <!-- Oluştur Butonu -->
                 <div class="pt-4">
-                    <button id="generateBtn" 
-                        class="w-full flex items-center justify-center py-4 px-8 border border-transparent text-lg font-medium rounded-2xl text-white bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
-                        <span>Şiiri Yazdır</span>
-                        <i class="fa-solid fa-wand-magic-sparkles ml-2"></i>
+                    <button id="generateBtn" class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl shadow-lg transform transition hover:-translate-y-1 hover:shadow-xl flex justify-center items-center gap-3 text-lg">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Şiiri Yazmaya Başla</span>
                     </button>
                 </div>
             </div>
-
-            <!-- Yükleniyor Durumu -->
-            <div id="loading-section" class="hidden text-center py-12 space-y-4">
-                <i class="fa-solid fa-heart loading-heart text-5xl"></i>
-                <p class="text-gray-500 font-medium italic text-lg" id="loading-text">Kelimeler bir araya geliyor...</p>
-            </div>
-
-            <!-- Sonuç Alanı -->
-            <div id="result-section" class="hidden mt-8 transition-all duration-500 opacity-0 relative">
-                <!-- Şiir Çerçevesi -->
-                <div class="relative bg-gradient-to-b from-[#fffaf0] to-white p-8 sm:p-10 rounded-2xl shadow-inner border border-gray-100 text-center">
-                    <!-- Süslemeler -->
-                    <div class="absolute top-4 left-4 text-pink-200 text-3xl opacity-50"><i class="fa-solid fa-quote-left"></i></div>
-                    <div class="absolute bottom-4 right-4 text-pink-200 text-3xl opacity-50"><i class="fa-solid fa-quote-right"></i></div>
-                    
-                    <h2 id="poem-title" class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b border-pink-100 italic"></h2>
-                    
-                    <div class="min-h-[150px] flex items-center justify-center">
-                        <p id="poem-content" class="poem-text text-gray-700 text-lg leading-loose whitespace-pre-wrap text-center"></p>
+            
+            <!-- Hata Mesajı Alanı -->
+            <div id="errorMsgContainer" class="hidden mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fa-solid fa-circle-exclamation text-red-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p id="errorMsg" class="text-sm text-red-700"></p>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Aksiyon Butonları -->
-                <div class="mt-8 flex gap-4">
-                    <button id="resetBtn" class="flex-1 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 transition-colors font-medium">
-                        <i class="fa-solid fa-arrow-rotate-left mr-2"></i> Başka Yaz
-                    </button>
-                    <button id="copyBtn" class="flex-1 py-3 px-4 border border-transparent rounded-xl text-white bg-pink-500 hover:bg-pink-600 transition-colors shadow-md font-medium">
-                        <i class="fa-regular fa-copy mr-2"></i> Kopyala
-                    </button>
+        <!-- Yükleniyor Ekranı -->
+        <div id="loadingSection" class="hidden flex-col items-center justify-center py-12 animate-fade-in">
+            <div class="relative w-24 h-24">
+                <i class="fa-solid fa-heart text-rose-500 text-5xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></i>
+                <div class="w-24 h-24 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin"></div>
+            </div>
+            <p class="mt-6 text-lg font-medium text-slate-600 font-handwriting text-2xl" id="loadingText">Sihirli kelimeler fısıldanıyor...</p>
+        </div>
+
+        <!-- Sonuç Ekranı -->
+        <div id="resultSection" class="hidden animate-slide-up mt-8">
+            
+            <!-- Şiir Çerçevesi -->
+            <div id="poemCard" class="bg-gradient-to-br from-[#fdfbfb] to-[#f4edeb] rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden border border-rose-100">
+                
+                <!-- Süslemeler -->
+                <div class="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-rose-300 rounded-tl-3xl opacity-50 m-4"></div>
+                <div class="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-rose-300 rounded-br-3xl opacity-50 m-4"></div>
+                <i class="fa-solid fa-quote-left absolute top-8 left-8 text-4xl text-rose-200"></i>
+
+                <!-- Hitap -->
+                <h2 id="poemTitle" class="font-handwriting text-4xl md:text-5xl text-center text-rose-600 mb-8 mt-4 drop-shadow-sm"></h2>
+
+                <!-- Şiir Metni -->
+                <div class="min-h-[200px] flex items-center justify-center relative z-10">
+                    <p id="poemContent" class="font-serif text-lg md:text-xl leading-loose text-slate-700 whitespace-pre-line text-center italic"></p>
+                </div>
+                
+                <div class="mt-10 text-right pr-4">
+                    <p class="font-handwriting text-2xl text-rose-500">- Sonsuz sevgilerle</p>
                 </div>
             </div>
 
-        </div>
-    </main>
+            <!-- Aksiyon Butonları -->
+            <div class="flex flex-wrap justify-center gap-3 mt-8">
+                <button id="readAloudBtn" class="flex items-center gap-2 px-5 py-3 rounded-full glass-card hover:bg-rose-50 transition-colors font-medium text-sm text-slate-700 shadow-sm">
+                    <i class="fa-solid fa-volume-high text-rose-500"></i> Sesli Oku
+                </button>
+                
+                <button id="copyBtn" class="flex items-center gap-2 px-5 py-3 rounded-full glass-card hover:bg-rose-50 transition-colors font-medium text-sm text-slate-700 shadow-sm">
+                    <i class="fa-solid fa-copy text-rose-500"></i> Kopyala
+                </button>
+                
+                <button id="downloadBtn" class="flex items-center gap-2 px-5 py-3 rounded-full bg-rose-500 hover:bg-rose-600 text-white transition-colors font-medium text-sm shadow-md">
+                    <i class="fa-solid fa-download"></i> Resim İndir
+                </button>
 
-    <!-- Hata Mesajı Kutusu -->
-    <div id="error-toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg hidden z-50 transition-opacity duration-300">
-        <div class="flex items-center">
-            <i class="fa-solid fa-circle-exclamation mr-3"></i>
-            <p id="error-message">Bir hata oluştu.</p>
+                <button id="resetBtn" class="flex items-center gap-2 px-5 py-3 rounded-full glass-card hover:bg-rose-50 transition-colors font-medium text-sm text-slate-700 shadow-sm">
+                    <i class="fa-solid fa-arrow-rotate-left text-slate-400"></i> Yeni Yaz
+                </button>
+            </div>
+            
+            <p id="copyMsg" class="text-green-600 text-center mt-3 text-sm hidden font-medium">Panoya kopyalandı!</p>
         </div>
     </div>
 
-    <!-- Başarı Mesajı Kutusu -->
-    <div id="success-toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg hidden z-50 transition-opacity duration-300">
-        <div class="flex items-center">
-            <i class="fa-solid fa-check-circle mr-3"></i>
-            <p>Şiir kopyalandı!</p>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // DOM Elementleri
-            const nameInput = document.getElementById('nameInput');
-            const themeBtns = document.querySelectorAll('.btn-theme');
-            const generateBtn = document.getElementById('generateBtn');
-            const inputSection = document.getElementById('input-section');
-            const loadingSection = document.getElementById('loading-section');
-            const loadingText = document.getElementById('loading-text');
-            const resultSection = document.getElementById('result-section');
-            const poemTitle = document.getElementById('poem-title');
-            const poemContent = document.getElementById('poem-content');
-            const resetBtn = document.getElementById('resetBtn');
-            const copyBtn = document.getElementById('copyBtn');
-            const errorToast = document.getElementById('error-toast');
-            const errorMessage = document.getElementById('error-message');
-            const successToast = document.getElementById('success-toast');
-
-            let selectedTheme = 'Romantik'; // Varsayılan tema
-
-            // Arka plan animasyonu için parçacıklar oluşturalım
-            const createParticles = () => {
-                const container = document.getElementById('particles-container');
-                const colors = ['rgba(255, 182, 193, 0.4)', 'rgba(230, 230, 250, 0.4)', 'rgba(255, 228, 225, 0.4)'];
-                
-                for (let i = 0; i < 15; i++) {
-                    const particle = document.createElement('div');
-                    particle.classList.add('particle');
-                    
-                    // Rastgele boyut (20px - 80px)
-                    const size = Math.random() * 60 + 20;
-                    particle.style.width = `${size}px`;
-                    particle.style.height = `${size}px`;
-                    
-                    // Rastgele pozisyon
-                    particle.style.left = `${Math.random() * 100}vw`;
-                    particle.style.top = `${Math.random() * 100}vh`;
-                    
-                    // Rastgele renk
-                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    // Rastgele animasyon gecikmesi ve süresi
-                    particle.style.animationDelay = `${Math.random() * 5}s`;
-                    particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
-                    
-                    container.appendChild(particle);
-                }
-            };
-            createParticles();
-
-            // Tema seçimi olayları
-            themeBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Önceki seçimi kaldır
-                    themeBtns.forEach(b => {
-                        b.classList.remove('selected', 'bg-pink-500', 'text-white', 'border-pink-500', 'bg-purple-500', 'border-purple-500', 'bg-blue-500', 'border-blue-500');
-                        // Orijinal renkleri geri ver (Tailwind classlarını sıfırlama mantığı)
-                        if(b.dataset.theme === 'Romantik') {
-                            b.classList.add('text-pink-600', 'bg-pink-50', 'border-pink-200');
-                            b.classList.remove('text-white', 'bg-pink-500', 'border-pink-500');
-                        } else if(b.dataset.theme === 'Eğlenceli') {
-                            b.classList.add('text-purple-600', 'bg-purple-50', 'border-purple-200');
-                            b.classList.remove('text-white', 'bg-purple-500', 'border-purple-500');
-                        } else if(b.dataset.theme === 'Derin') {
-                            b.classList.add('text-blue-600', 'bg-blue-50', 'border-blue-200');
-                            b.classList.remove('text-white', 'bg-blue-500', 'border-blue-500');
-                        }
-                    });
-
-                    // Yeni seçimi uygula
-                    selectedTheme = btn.dataset.theme;
-                    btn.classList.add('selected');
-                    
-                    // Seçilen temaya göre renk ayarı
-                    if(selectedTheme === 'Romantik') {
-                        btn.classList.remove('text-pink-600', 'bg-pink-50', 'border-pink-200');
-                        btn.classList.add('text-white', 'bg-pink-500', 'border-pink-500');
-                    } else if(selectedTheme === 'Eğlenceli') {
-                        btn.classList.remove('text-purple-600', 'bg-purple-50', 'border-purple-200');
-                        btn.classList.add('text-white', 'bg-purple-500', 'border-purple-500');
-                    } else if(selectedTheme === 'Derin') {
-                        btn.classList.remove('text-blue-600', 'bg-blue-50', 'border-blue-200');
-                        btn.classList.add('text-white', 'bg-blue-500', 'border-blue-500');
-                    }
-                });
-            });
-
-            // Başlangıçta varsayılan seçimi uygula
-            document.querySelector('[data-theme="Romantik"]').click();
-
-            // Toast mesajlarını gösterme fonksiyonu
-            const showToast = (element, duration = 3000) => {
-                element.classList.remove('hidden');
-                setTimeout(() => {
-                    element.classList.add('hidden');
-                }, duration);
-            };
-
-            // Daktilo efekti fonksiyonu
-            const typeWriter = (text, element, speed = 50) => {
-                element.innerHTML = '';
-                let i = 0;
-                
-                return new Promise((resolve) => {
-                    function type() {
-                        if (i < text.length) {
-                            // Satır sonlarını br etiketine çevir
-                            if(text.charAt(i) === '\n') {
-                                element.innerHTML += '<br>';
-                            } else {
-                                element.innerHTML += text.charAt(i);
-                            }
-                            i++;
-                            setTimeout(type, speed);
-                        } else {
-                            resolve();
-                        }
-                    }
-                    type();
-                });
-            };
-
-            // Yükleme mesajlarını değiştiren fonksiyon
-            let loadingInterval;
-            const startLoadingMessages = () => {
-                const messages = [
-                    "İlham perileri çağrılıyor...",
-                    "Kelimeler dans ediyor...",
-                    "En güzel hisler toparlanıyor...",
-                    "Ona özel cümleler kuruluyor..."
-                ];
-                let msgIndex = 0;
-                loadingText.textContent = messages[0];
-                
-                loadingInterval = setInterval(() => {
-                    msgIndex = (msgIndex + 1) % messages.length;
-                    // Hafif fade efekti için
-                    loadingText.style.opacity = 0;
-                    setTimeout(() => {
-                        loadingText.textContent = messages[msgIndex];
-                        loadingText.style.opacity = 1;
-                    }, 300);
-                }, 2000);
-            };
-
-            const buildLocalPoem = (name, theme) => {
-                const templates = {
-                    Romantik: [
-                        {
-                            title: `${name} - Kalbimin Şarkısı`,
-                            poem: `Senin ismini her şeyde buluyorum,\nDubaya batmış güneşte, sonbahar yapraklarında.\n\nYavaş adımlarla gelişin hayalinde,\nAller düşlerimi boyuyor, sözleri müzik oluyor.`
-                        },
-                        {
-                            title: `${name}ye Yazılmış Bir Söz`,
-                            poem: `Gözlerine baktığımda zaman durmuyor mu,\nYoksa ben miyim durgun, masal içinde?\n\nSenin adının her harfi bir parmak izi,\nKalbimde tıpkı ilk kez yazılmış gibi.`
-                        },
-                        {
-                            title: `${name} - Sonsuzluk Fikriyesi`,
-                            poem: `Seninle ölümsüzlüğü tatmak isterdim,\nHer anını kry'e dönüştürmek, ebedi tutmak.\n\nAma biliyorum, güzel olan hep fani,\nSen varmışken, ben yetiyorum sadece.`
-                        },
-                        {
-                            title: `${name} İçin Sessiz Bir Aşk`,
-                            poem: `Söylememeyi seçiyorum, çünkü sözcükler yeterli değil,\nHissettirmek daha güzel, adımlarımla anlatmak.\n\nSenin varlığın benim dünyamı değiştirmiş,\nTitremeyi, yükselmesi, ve birlikte düşmesini öğretmiş.`
-                        }
-                    ],
-                    Eğlenceli: [
-                        {
-                            title: `${name} ile Dünyanın En Güzel Oyunu`,
-                            poem: `Seninle kahkahalar yağmur gibi yağıyor,\nGözlerine baktığımda dünya durup kalıyor.\n\nTatlı bir delilik bu, senin adının telaffuzu,\nHer gülüşün benim en güzel kazancı.`
-                        },
-                        {
-                            title: `${name} - Hayatın En Komik Sahnesi`,
-                            poem: `Seni tanıyorum ama hâlâ şaşırıyorum,\nNasal bir espri yapıp beni kırdığında.\n\nDünyanın en eğlenceli azabı budur,\nGülüp ağlamak, kontrol kaybetmek, yeniden başlamak.`
-                        },
-                        {
-                            title: `${name}' Adına Gülümsemek`,
-                            poem: `Seninle her gün bir festivali andırıyor,\nTekrar edeni kim bilir, ama sıkılmıyorum.\n\nBelki de saf sevincin yanında her şey tuhaf gelir,\nAma bu tuhaf en kıymetli olanı.`
-                        },
-                        {
-                            title: `${name} - Kaosu Seviyorum`,
-                            poem: `Seni gördüğümde beynim döner, donmuyor mu,\nHer kelimem tersine dönerken sen gülüyorsun.\n\nBu çılgınlık belki sevgi değil,\nAma daha iyi hiçbir şey yok.`
-                        }
-                    ],
-                    Derin: [
-                        {
-                            title: `${name} - Ruhun Dili`,
-                            poem: `Senin yokluğunda denizdeki su kadar sessizim,\nBulut gibi geçişin, sabıkası acıyı taşıyan bir rüya.\n\nBiliyorum, bir soru soruluyor sessizde,\nSen, sorunun cevabı değil, sorunun kendisisin.`
-                        },
-                        {
-                            title: `${name} - Varoluşun Şiiri`,
-                            poem: `Neden varsın? Neden ben? Neden bu an?\nFelsefi sorular benim içimde kabul ediyor.\n\nSen bütün bunları yanıtlıyorsun sessizce,\nAç olmayan kapıda, söz söylemeyen dudaklarla.`
-                        },
-                        {
-                            title: `${name}ye Yazılı Bir Sır`,
-                            poem: `Bazı şeyler söylenmemek için doğdu,\nRuhlarda kalıp, kokular gibi yayılacaklar.\n\nSen bunu bilmiyorsun, ama ben biliyorum,\nEzeli bir çizgi üzerinde ismiyle birlikte yaşıyorum.`
-                        },
-                        {
-                            title: `${name} - Ölümlülüğün Anlattığı`,
-                            poem: `Her insan bir şey kaybetmiş olarak doğar,\nBen de senin gelmeden önce kaybettim mi bilmiyorum.\n\nAma şimdi anladım, ölümlülük güzelmiş,\nÇünkü anlamsız gibi görünen her an kıymetli.`
-                        }
-                    ]
-                };
-
-                const themePoems = templates[theme] || templates.Romantik;
-                return themePoems[Math.floor(Math.random() * themePoems.length)];
-            };
-
-            const renderPoemResult = (result) => {
-                clearInterval(loadingInterval);
-                loadingSection.classList.add('hidden');
-
-                resultSection.classList.remove('hidden');
-                setTimeout(() => {
-                    resultSection.classList.add('fade-in');
-                    poemTitle.textContent = result.title;
-                    typeWriter(result.poem, poemContent, 40);
-                }, 50);
-            };
-
-            // Şiir oluşturma ana fonksiyonu
-            const generatePoem = async () => {
-                const name = nameInput.value.trim();
-                
-                if (!name) {
-                    errorMessage.textContent = "Lütfen onun ismini yazın.";
-                    showToast(errorToast);
-                    nameInput.focus();
-                    return;
-                }
-
-                // UI Durumunu güncelle (Yükleniyor)
-                inputSection.classList.add('hidden');
-                resultSection.classList.add('hidden');
-                resultSection.classList.remove('fade-in');
-                loadingSection.classList.remove('hidden');
-                startLoadingMessages();
-
-                // LLM Prompt'u hazırlama
-                const systemPrompt = `Sen usta bir şairsin. Her şiir tamamen özgün, yaratıcı ve kişiye özel olmalı.
-
-Kurallar:
-- Hiçbir iki şiir aynı olmasın
-- Klişelerden çok uzak dur
-- Doğal, samimi, insan yazılmış gibi
-- Güçlü metaforlar ve görüntüler kullan
-- Kelimeler çok iyi seçilmiş olsun
-- Kalbe dokunmalı, unutulmaz olmalı
-- Başlık kısa, çekici, özel
-- Şiir 2-3 kıta, dengeli ritim
-
-Her çağrıda FARKLI bir angle, stil ve tema kullan. Tekrar etme!`;
-                
-                let themeInstruction = "";
-                if (selectedTheme === "Romantik") {
-                    themeInstruction = "Aşk, arzı, sehneti. Farklı bir bakış açısından. Belki doğa metaforu, belki felsefe, belki sürreal. Sadece duygu ve güzellik. Romantik ama sürprizli.";
-                } else if (selectedTheme === "Eğlenceli") {
-                    themeInstruction = "Neşe, espri, tatlılık. Hafif mizah, akıllı sözler. Eğlence ama derin bir anlam saklı. Gülümsemeyi hak eden şiir.";
-                } else if (selectedTheme === "Derin") {
-                    themeInstruction = "Derin düşünceler, yapısallaşmamış duygular. Muğlak, gizemli, düşündürücü. Felsefe, varoluş, ruh. Sessiz ama güçlü. Anlamlar katmanı.";
-                }
-
-                const userQuery = `${name} isimli biri için ${selectedTheme.toLowerCase()} temada orijinal, etkileyici ve kişiye özel bir şiir yaz.
-
-Talimatlar:
-- Şiir benzersiz ve unutulmaz olmalı
-- Klişe veya şablondan kaçın
-- Doğal ve samimi bir dil kullan
-- 2-3 kita, güçlü imajlarla dolu
-- ${themeInstruction}
-
-Sadece şu JSON formatında cevap ver:
-{
-    "title": "Şiirin Başlığı",
-    "poem": "Satır 1\\nSatır 2\\n\\nSatır 3\\nSatır 4"
-}`;
-
-                const payload = {
-                    contents: [{ parts: [{ text: userQuery }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: {
-                        temperature: 1.0,
-                        top_p: 0.95,
-                        responseMimeType: "application/json",
-                    }
-                };
-
-                const apiKey = "AQ.Ab8RN6Ij5o4eGlm4NgtOMrxCvYvUObGzja4U1nNHpclkgjClZg";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                if (!apiKey) {
-                    renderPoemResult(buildLocalPoem(name, selectedTheme));
-                    return;
-                }
-
-                try {
-                    // Retry mekanizması
-                    let response;
-                    let retries = 3;
-                    let delay = 1000;
-
-                    for (let i = 0; i < retries; i++) {
-                        try {
-                            response = await fetch(apiUrl, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(payload)
-                            });
-                            
-                            if (response.ok) break;
-                            
-                            if (response.status === 429) {
-                                await new Promise(r => setTimeout(r, delay));
-                                delay *= 2; // Exponential backoff
-                            } else {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                        } catch (e) {
-                            if (i === retries - 1) throw e;
-                            await new Promise(r => setTimeout(r, delay));
-                        }
-                    }
-
-                    if (!response || !response.ok) {
-                         throw new Error("API'ye ulaşılamadı.");
-                    }
-
-                    const result = await response.json();
-                    
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        
-                        const jsonString = result.candidates[0].content.parts[0].text;
-                        const parsedData = JSON.parse(jsonString);
-                        renderPoemResult(parsedData);
-
-                    } else {
-                        throw new Error("Beklenmeyen API yanıt formatı.");
-                    }
-
-                } catch (error) {
-                    console.warn("API kullanılamıyor, yerel şiir kullanılıyor:", error);
-                    renderPoemResult(buildLocalPoem(name, selectedTheme));
-                }
-            };
-
-            // Buton tıklama olayı
-            generateBtn.addEventListener('click', generatePoem);
-
-            // Enter tuşuna basıldığında
-            nameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    generatePoem();
-                }
-            });
-
-            // Başka Yaz butonu
-            resetBtn.addEventListener('click', () => {
-                resultSection.classList.remove('fade-in');
-                resultSection.classList.add('hidden');
-                
-                // Formu sıfırlama (İsmi tutabiliriz, belki aynı isme başka şiir ister)
-                // nameInput.value = ''; 
-                
-                inputSection.classList.remove('hidden');
-                poemContent.innerHTML = '';
-                poemTitle.textContent = '';
-                nameInput.focus();
-            });
-
-            // Kopyala butonu
-            copyBtn.addEventListener('click', () => {
-                const title = poemTitle.textContent;
-                // <br> etiketlerini yeni satıra (\n) çevir
-                let poemText = poemContent.innerHTML.replace(/<br\s*[\/]?>/gi, "\n");
-                // Eğer daktilo efekti bitmediyse, ham metni almak zor olabilir, 
-                // ama biz innerHTML üzerinden alıp temizliyoruz.
-                
-                const fullText = `${title}\n\n${poemText}`;
-                
-                // Güvenli kopyalama yöntemi
-                try {
-                    // Modern yöntem denemesi
-                    if (navigator.clipboard && window.isSecureContext) {
-                        navigator.clipboard.writeText(fullText).then(() => {
-                            showToast(successToast);
-                        });
-                    } else {
-                        // Fallback (iFrame içi vb. durumlar için)
-                        const textArea = document.createElement("textarea");
-                        textArea.value = fullText;
-                        textArea.style.position = "fixed";
-                        textArea.style.left = "-999999px";
-                        textArea.style.top = "-999999px";
-                        document.body.appendChild(textArea);
-                        textArea.focus();
-                        textArea.select();
-                        document.execCommand('copy');
-                        textArea.remove();
-                        showToast(successToast);
-                    }
-                } catch (err) {
-                    console.error('Kopyalama başarısız:', err);
-                    errorMessage.textContent = "Kopyalama başarısız oldu.";
-                    showToast(errorToast);
-                }
-            });
-        });
-    </script>
+    <!-- Harici JS Dosyamız -->
+    <script src="app.js"></script>
 </body>
 </html>

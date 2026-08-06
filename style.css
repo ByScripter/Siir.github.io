@@ -1,0 +1,49 @@
+/* Temel Ayarlar ve Arka Plan */
+body {
+background: linear-gradient(135deg, #fff1f2 0%, #fecdd3 100%);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* Cam Efekti (Glassmorphism) */
+.glass-card {
+background: rgba(255, 255, 255, 0.7);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Arka Plan Hareketli Partiküller */
+.particles {
+position: absolute;
+top: 0; left: 0; width: 100%; height: 100%;
+pointer-events: none; z-index: 0; overflow: hidden;
+}
+
+.particle {
+position: absolute;
+background: rgba(244, 63, 94, 0.2);
+border-radius: 50%;
+animation: float 10s infinite linear;
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0) rotate(0deg); }
+50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Daktilo (Typewriter) İmleç Efekti */
+.cursor::after {
+content: '|';
+animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+50% { opacity: 0; }
+}
+
+/* Özel Scrollbar Tasarımı */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #fecdd3; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #fda4af; }
