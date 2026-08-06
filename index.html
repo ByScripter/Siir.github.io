@@ -358,21 +358,64 @@
 
             const buildLocalPoem = (name, theme) => {
                 const templates = {
-                    Romantik: {
-                        title: `${name} - Kalbimin Şarkısı`,
-                        poem: `Senin ismini her şeyde buluyorum,\nDubaya batmış güneşte, sonbahar yapraklarında.\n\nYavaş adımlarla gelişin hayalinde,\nAller düşlerimi boyuyor, sözleri müzik oluyor.`
-                    },
-                    Eğlenceli: {
-                        title: `${name} ile Dünyanın En Güzel Oyunu`,
-                        poem: `Seninle kahkahalar yağmur gibi yağıyor,\nGözlerine baktığımda dünya durup kalıyor.\n\nTatlı bir delilik bu, senin adının telaffuzu,\nHer gülüşün benim en güzel kazancı.`
-                    },
-                    Derin: {
-                        title: `${name} - Ruhun Dili`,
-                        poem: `Senin yokluğunda denizdeki su kadar sessizim,\nBulut gibi geçişin, sabıkası acıyı taşıyan bir rüya.\n\nBiliyorum, bir soru soruluyor sessizde,\nSen, sorunun cevabı değil, sorunun kendisisin.`
-                    }
+                    Romantik: [
+                        {
+                            title: `${name} - Kalbimin Şarkısı`,
+                            poem: `Senin ismini her şeyde buluyorum,\nDubaya batmış güneşte, sonbahar yapraklarında.\n\nYavaş adımlarla gelişin hayalinde,\nAller düşlerimi boyuyor, sözleri müzik oluyor.`
+                        },
+                        {
+                            title: `${name}ye Yazılmış Bir Söz`,
+                            poem: `Gözlerine baktığımda zaman durmuyor mu,\nYoksa ben miyim durgun, masal içinde?\n\nSenin adının her harfi bir parmak izi,\nKalbimde tıpkı ilk kez yazılmış gibi.`
+                        },
+                        {
+                            title: `${name} - Sonsuzluk Fikriyesi`,
+                            poem: `Seninle ölümsüzlüğü tatmak isterdim,\nHer anını kry'e dönüştürmek, ebedi tutmak.\n\nAma biliyorum, güzel olan hep fani,\nSen varmışken, ben yetiyorum sadece.`
+                        },
+                        {
+                            title: `${name} İçin Sessiz Bir Aşk`,
+                            poem: `Söylememeyi seçiyorum, çünkü sözcükler yeterli değil,\nHissettirmek daha güzel, adımlarımla anlatmak.\n\nSenin varlığın benim dünyamı değiştirmiş,\nTitremeyi, yükselmesi, ve birlikte düşmesini öğretmiş.`
+                        }
+                    ],
+                    Eğlenceli: [
+                        {
+                            title: `${name} ile Dünyanın En Güzel Oyunu`,
+                            poem: `Seninle kahkahalar yağmur gibi yağıyor,\nGözlerine baktığımda dünya durup kalıyor.\n\nTatlı bir delilik bu, senin adının telaffuzu,\nHer gülüşün benim en güzel kazancı.`
+                        },
+                        {
+                            title: `${name} - Hayatın En Komik Sahnesi`,
+                            poem: `Seni tanıyorum ama hâlâ şaşırıyorum,\nNasal bir espri yapıp beni kırdığında.\n\nDünyanın en eğlenceli azabı budur,\nGülüp ağlamak, kontrol kaybetmek, yeniden başlamak.`
+                        },
+                        {
+                            title: `${name}' Adına Gülümsemek`,
+                            poem: `Seninle her gün bir festivali andırıyor,\nTekrar edeni kim bilir, ama sıkılmıyorum.\n\nBelki de saf sevincin yanında her şey tuhaf gelir,\nAma bu tuhaf en kıymetli olanı.`
+                        },
+                        {
+                            title: `${name} - Kaosu Seviyorum`,
+                            poem: `Seni gördüğümde beynim döner, donmuyor mu,\nHer kelimem tersine dönerken sen gülüyorsun.\n\nBu çılgınlık belki sevgi değil,\nAma daha iyi hiçbir şey yok.`
+                        }
+                    ],
+                    Derin: [
+                        {
+                            title: `${name} - Ruhun Dili`,
+                            poem: `Senin yokluğunda denizdeki su kadar sessizim,\nBulut gibi geçişin, sabıkası acıyı taşıyan bir rüya.\n\nBiliyorum, bir soru soruluyor sessizde,\nSen, sorunun cevabı değil, sorunun kendisisin.`
+                        },
+                        {
+                            title: `${name} - Varoluşun Şiiri`,
+                            poem: `Neden varsın? Neden ben? Neden bu an?\nFelsefi sorular benim içimde kabul ediyor.\n\nSen bütün bunları yanıtlıyorsun sessizce,\nAç olmayan kapıda, söz söylemeyen dudaklarla.`
+                        },
+                        {
+                            title: `${name}ye Yazılı Bir Sır`,
+                            poem: `Bazı şeyler söylenmemek için doğdu,\nRuhlarda kalıp, kokular gibi yayılacaklar.\n\nSen bunu bilmiyorsun, ama ben biliyorum,\nEzeli bir çizgi üzerinde ismiyle birlikte yaşıyorum.`
+                        },
+                        {
+                            title: `${name} - Ölümlülüğün Anlattığı`,
+                            poem: `Her insan bir şey kaybetmiş olarak doğar,\nBen de senin gelmeden önce kaybettim mi bilmiyorum.\n\nAma şimdi anladım, ölümlülük güzelmiş,\nÇünkü anlamsız gibi görünen her an kıymetli.`
+                        }
+                    ]
                 };
 
-                return templates[theme] || templates.Romantik;
+                const themePoems = templates[theme] || templates.Romantik;
+                return themePoems[Math.floor(Math.random() * themePoems.length)];
             };
 
             const renderPoemResult = (result) => {
